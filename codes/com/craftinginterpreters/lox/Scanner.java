@@ -1,13 +1,28 @@
 package com.craftinginterpreters.lox;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.craftinginterpreters.lox.Lox;
-
-import static com.craftinginterpreters.lox.TokenType.*; 
+import static com.craftinginterpreters.lox.TokenType.BANG;
+import static com.craftinginterpreters.lox.TokenType.BANG_EQUAL;
+import static com.craftinginterpreters.lox.TokenType.COMMA; 
+import static com.craftinginterpreters.lox.TokenType.DOT;
+import static com.craftinginterpreters.lox.TokenType.EOF;
+import static com.craftinginterpreters.lox.TokenType.EQUAL;
+import static com.craftinginterpreters.lox.TokenType.EQUAL_EQUAL;
+import static com.craftinginterpreters.lox.TokenType.GREATER;
+import static com.craftinginterpreters.lox.TokenType.GREATER_EQUAL;
+import static com.craftinginterpreters.lox.TokenType.LEFT_BRACE;
+import static com.craftinginterpreters.lox.TokenType.LEFT_PAREN;
+import static com.craftinginterpreters.lox.TokenType.LESS;
+import static com.craftinginterpreters.lox.TokenType.LESS_EQUAL;
+import static com.craftinginterpreters.lox.TokenType.MINUS;
+import static com.craftinginterpreters.lox.TokenType.PLUS;
+import static com.craftinginterpreters.lox.TokenType.RIGHT_BRACE;
+import static com.craftinginterpreters.lox.TokenType.RIGHT_PAREN;
+import static com.craftinginterpreters.lox.TokenType.SEMICOLON;
+import static com.craftinginterpreters.lox.TokenType.SLASH;
+import static com.craftinginterpreters.lox.TokenType.STAR;
 
 class Scanner {
   private final String source;
@@ -43,8 +58,48 @@ class Scanner {
       case '+': addToken(PLUS); break;
       case ';': addToken(SEMICOLON); break;
       case '*': addToken(STAR); break; 
+      case'!':
+          /* 
+          if(match('=')){
+          addToken(BANG_EQUAL);
+          }else{
+            addToken(BANG);
+          }
+          */
+
+          
+        addToken(match('=') ? BANG_EQUAL : BANG);
+        break;
+
+      case '=':
+        addToken(match('=') ? EQUAL_EQUAL : EQUAL);
+        break;
+      case '<':
+        addToken(match('=') ? LESS_EQUAL : LESS);
+        break;
+      case '>':
+        addToken(match('=') ? GREATER_EQUAL : GREATER);
+        break;
+
+      case '/':
+        if (match('/')) {
+          while (peek() != '\n' && !isAtEnd()) advance();
+        } else {
+          addToken(SLASH);
+        }
+        break;
+      case ' ':
+      case '\r':
+      case '\t':
+        // Ignore whitespace.
+        break;
+
+      case '\n':
+        line++;
+        break;
+          
       default:
-        Lox.error(line, "Unexpected character.");
+        Lox.error(line,"Unexpected character.");
         break;
     }
   }
@@ -62,5 +117,16 @@ class Scanner {
   private void addToken(TokenType type, Object literal) {
     String text = source.substring(start, current);
     tokens.add(new Token(type, text, literal, line));
+  }
+   private boolean match(char expected) {
+    if (isAtEnd()) return false;
+    if (source.charAt(current) != expected) return false;
+
+    current++;
+    return true;
+  }
+  private char peek() {
+    if (isAtEnd()) return '\0';
+    return source.charAt(current);
   }
 }

@@ -20,7 +20,3 @@ enum TokenType {
 
   EOF
 }
-
-public class TokenType {
-    
-}
