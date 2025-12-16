@@ -57,6 +57,13 @@ public class GenerateAst {
       String name = field.split(" ")[1];
       writer.println("      this." + name + " = " + name + ";");
     }
+    writer.println("  }");
+    writer.println();
+    writer.println("    @Override");
+    writer.println("    <R> R accept(Visitor<R> visitor) {");
+    writer.println("      return visitor.visit" + className + baseName + "(this);");
+    writer.println("    }");
+
 
     writer.println("    }");
 
@@ -65,13 +72,6 @@ public class GenerateAst {
     for (String field : fields) {
       writer.println("    final " + field + ";");
     }
-
-    writer.println("  }");
-    writer.println();
-    writer.println("    @Override");
-    writer.println("    <R> R accept(Visitor<R> visitor) {");
-    writer.println("      return visitor.visit" + className + baseName + "(this);");
-    writer.println("    }");
 
     writer.println("  }");
   }
