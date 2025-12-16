@@ -64,9 +64,6 @@ public class GenerateAst {
     writer.println("      return visitor.visit" + className + baseName + "(this);");
     writer.println("    }");
 
-
-    writer.println("    }");
-
     // Fields.
     writer.println();
     for (String field : fields) {
@@ -106,5 +103,6 @@ public class GenerateAst {
       writer.println("    R visit" + typeName + baseName + "(" +
           typeName + " " + baseName.toLowerCase() + ");");
     }
+    writer.println("  }");
   }
 }
