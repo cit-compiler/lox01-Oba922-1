@@ -18,7 +18,6 @@ class Parser {
       return null;
     }
   }
- 
   private Expr expression() {
     return equality();
   }
